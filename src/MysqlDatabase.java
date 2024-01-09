@@ -7,9 +7,9 @@ import java.util.List;
 
 public class MysqlDatabase {
 
-    public static final String MYSQL_JDBCDRIVER = "com.mysql.jdbc.Driver";
+    public static final String MYSQL_JDBCDRIVER = "com.mysql.cj.jdbc.Driver";
     //TODO URL設定
-    public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/mydatabase";
+    public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/sotsugyou";
     public static final String MYSQL_USER = "root";
     public static final String MYSQL_PASS = "";
     public static final String TABEL_DOLL = "doll";
@@ -60,14 +60,14 @@ public class MysqlDatabase {
      * @param where
      * @return
      */
-    public List<String> selectDoll(String tableName, String dataName, String where) {
+    public void selectDoll(String tableName, String dataName, String where) {
 
         try {
 
             if(statement == null) {
 
                 Log.i("MysqlDatabase", "select", "statement is null object");
-                return null;
+                return;
 
             }else {
 
@@ -83,8 +83,6 @@ public class MysqlDatabase {
 
                 }
                 rs = statement.executeQuery(sqlCommand);
-
-                ArrayList datalist = new ArrayList();
 
                 while (rs.next()) {
 
