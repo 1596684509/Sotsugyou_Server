@@ -12,7 +12,8 @@ public class MysqlDatabase {
     public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/sotsugyou";
     public static final String MYSQL_USER = "root";
     public static final String MYSQL_PASS = "";
-    public static final String TABEL_DOLL = "doll";
+    public static final String TABLE_NAME_DOLL = "doll";
+    public static final String TABLE_NAME_USER = "user";
 
     private Connection connection;
     private Statement statement;
@@ -30,7 +31,7 @@ public class MysqlDatabase {
 
             connection = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PASS);
 
-            Log.i("MysqlDatabase", "connectDatabase", "mysql とつながりました");\
+            Log.i("MysqlDatabase", "connectDatabase", "mysql とつながりました");
             statement = connection.createStatement();
             isCennected = true;
 
@@ -38,14 +39,14 @@ public class MysqlDatabase {
 
             Log.i("MysqlDatabase", "connectDatabase", "DriverManager 異常");
             e.printStackTrace();
+            close();
 
         } catch (SQLException e) {
 
             Log.i("MysqlDatabase", "connectDatabase", "cennceted error");
             e.printStackTrace();
-
-        } finally {
             close();
+
         }
 
         return isCennected;
@@ -106,6 +107,8 @@ public class MysqlDatabase {
 
     public void close() {
 
+        Log.i("MysqlDatabase", "cloes", "データベースを閉じてる");
+
         try {
 
             if(rs != null) {
@@ -125,6 +128,8 @@ public class MysqlDatabase {
                 connection.close();
 
             }
+
+            Log.i("MysqlDatabase", "cloes", "データベースを閉じました");
 
         } catch (SQLException e) {
 

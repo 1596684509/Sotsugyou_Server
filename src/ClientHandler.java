@@ -1,7 +1,6 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ClientHandler implements Runnable{
 
@@ -20,16 +19,7 @@ public class ClientHandler implements Runnable{
 
             sendMessage("hello this is server");
 
-            while (true) {
-
-                System.out.println(rcvMsg());
-                if(rcvMsg().equals(-1)) {
-
-                    break;
-
-                }
-
-            }
+            System.out.println(rcvMsg());
 
         }
 
@@ -50,7 +40,7 @@ public class ClientHandler implements Runnable{
         }catch (IOException e) {
 
             e.printStackTrace();
-            closeAll();
+            close();
 
         }
 
@@ -58,9 +48,7 @@ public class ClientHandler implements Runnable{
 
     public String rcvMsg() {
 
-        byte[] msgByte = new byte[128];
-        int msg_len;
-        String msgStr = null;
+        StringBuffer stringBuffer;
 
         try {
 
@@ -70,28 +58,62 @@ public class ClientHandler implements Runnable{
 
             }
 
-            msg_len = in.read(msgByte);
+            stringBuffer = new StringBuffer();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
-            if(msg_len == -1) {
+            String line;
+            while((line = bufferedReader.readLine()) != null) {
 
-                closeAll();
-                return null;
+                stringBuffer.append(line);
 
             }
 
-            msgStr = new String(msgByte, 0, msg_len);
+
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
-        return msgStr;
+        return stringBuffer.toString();
 
     }
 
+//    public String rcvMsg() {
+//
+//        byte[] msgByte = new byte[];
+//        int msg_len;
+//        String msgStr = null;
+//
+//        try {
+//
+//            if(in == null) {
+//
+//                in = client.getInputStream();
+//
+//            }
+//
+//            msg_len = in.read(msgByte);
+//
+//            if(msg_len == -1) {
+//
+//                close();
+//                return null;
+//
+//            }
+//
+//            msgStr = new String(msgByte, 0, msg_len);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return msgStr;
+//
+//    }
 
 
-    private void closeAll() {
+
+    public void close() {
 
         try {
 
@@ -102,16 +124,6 @@ public class ClientHandler implements Runnable{
             if (out != null) {
                 out.close();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void close() {
-
-        try {
 
             if(client != null) {
 

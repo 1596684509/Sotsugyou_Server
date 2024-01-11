@@ -41,24 +41,52 @@ public class SocketHandler {
 
     public void acceptForClient() {
 
-        if(server == null) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(server == null) {
 
-            Log.i("SocketHandler", "acceptForClient", "server is not start");
-            return;
+                    Log.i("SocketHandler", "acceptForClient", "server is not start");
+                    return;
 
-        }
+                }
 
-        try {
+                try {
 
-            while (true) {
+                    while (true) {
 
-                Socket socket = server.accept();
-                executorService.submit(new ClientHandler(socket));
+                        if(server.isClosed()) {
+                            break;
 
+                        }
+
+                        Log.i("SockedHandler", "acceptForClient", "携帯からの繋ぎを待ってる");
+
+                        Socket socket = server.accept();
+                        executorService.submit(new ClientHandler(socket));
+
+                    }
+
+                } catch (IOException e) {
+                }
+            }
+        }).start();
+
+    }
+
+    public void close() {
+
+        Log.i("SocketHandler", "close", "サーバを閉じています");
+
+        if(server != null) {
+
+            try {
+                server.close();
+                Log.i("SocketHandler", "close", "サーバを閉じました");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
