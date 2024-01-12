@@ -37,13 +37,35 @@ public class JsonHandler {
             user.setIconId(jsonObject.getInt("iconid"));
             user.setName(jsonObject.getString("name"));
 
-            System.out.println(jsonObject.toString());
 
         } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
 
         return user;
+
+    }
+
+    public static String userToJsonStr(User user) {
+
+        String str = null;
+
+        try {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userid", user.getUserId());
+            jsonObject.put("name", user.getName());
+            jsonObject.put("iconid", user.getIconId());
+            str = jsonObject.toString();
+
+        } catch (JSONException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return str;
 
     }
 
@@ -54,15 +76,14 @@ public class JsonHandler {
         try {
 
             doll.setName(jsonObject.getString("dollname"));
-            doll.setExp(jsonObject.getInt("exp"));
-            doll.setLevel(jsonObject.getInt("level"));
+            doll.setExp(jsonObject.getInt("dollexp"));
+            doll.setLevel(jsonObject.getInt("dolllevel"));
             doll.setFrameId(jsonObject.getInt("dollframeid"));
             doll.setBackgroundId(jsonObject.getInt("dollbackgroundid"));
             doll.setImage(jsonObject.getString("dollimage"));
 
-            System.out.println(jsonObject.toString());
-
         } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
 

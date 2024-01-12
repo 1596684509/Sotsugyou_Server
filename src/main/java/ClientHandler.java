@@ -1,6 +1,7 @@
 import Utils.ClientCode;
 import Utils.JsonHandler;
 import Utils.Log;
+import obj.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,13 +40,14 @@ public class ClientHandler implements Runnable{
                     if(datatype == ClientCode.DATATYPE_USERREGISTER_CODE) {
 
                         registerUser();
-                        closeDatabase();
 
                     }else if(datatype == ClientCode.DATATYPE_DOLLUP_CODE) {
 
-                        Log.i("ClientHandler", "run", "datatype: " + ClientCode.DATATYPE_DOLLUP_CODE);
                         updataDoll();
-                        closeDatabase();
+
+                    }else if(datatype == ClientCode.DATATYPE_USERLOGIN_CODE) {
+
+                        login();
 
                     }
 
@@ -54,6 +56,21 @@ public class ClientHandler implements Runnable{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            closeDatabase();
+            close();
+
+        }
+
+    }
+
+    private void login() {
+
+        User user = mysqlDatabase.selectUser(jsonObject);
+
+        if(user != null) {
+
+            sendMessage(JsonHandler.userToJsonStr(user));
 
         }
 
@@ -100,13 +117,13 @@ public class ClientHandler implements Runnable{
             }
 
             out.write(message.getBytes());
+            out.flush();
+            client.shutdownOutput();
 
         }catch (IOException e) {
 
             e.printStackTrace();
 
-        }finally {
-            close();
         }
 
     }
@@ -135,8 +152,6 @@ public class ClientHandler implements Runnable{
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
-            close();
         }
 
         return stringBuffer.toString();
@@ -148,7 +163,6 @@ public class ClientHandler implements Runnable{
         if(mysqlDatabase != null) {
 
             mysqlDatabase.close();
-            Log.i("ClientHandler", "close", "database を閉じてる");
 
         }
 
@@ -156,7 +170,6 @@ public class ClientHandler implements Runnable{
 
     public void close() {
 
-        Log.i("ClientHandler", "close", "client を閉じてる");
 
         try {
 
@@ -174,7 +187,6 @@ public class ClientHandler implements Runnable{
 
             }
 
-            Log.i("ClientHandler", "close", "client を閉じました");
 
         } catch (IOException e) {
             e.printStackTrace();

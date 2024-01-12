@@ -1,6 +1,8 @@
 import Utils.Log;
 import obj.Doll;
 import obj.User;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.*;
 
@@ -52,6 +54,7 @@ public class MysqlDatabase {
 
     }
 
+    //TODO ID是否注册检查
     public boolean insertUser(User user) {
 
         boolean isInsertend = false;
@@ -94,18 +97,19 @@ public class MysqlDatabase {
         boolean isInsertend = false;
 
         String sqlCommand = "INSERT INTO " + TABLE_NAME_DOLL + " (userid, name, exp, level, frameid, backgroundid, image) VALUES (?, ?, ?, ?, ?, ?, ?)" +
-                "ON DUPLICATE KEY UPDATE userid = userid, name = VALUES(name), exp = VALUES(exp), level = VALUES(level), frameid = VALUES(frameid), backgroundid = VALUES(backgroundid), image + VALUES(image)";
+                "ON DUPLICATE KEY UPDATE name = VALUES(name), exp = VALUES(exp), level = VALUES(level), frameid = VALUES(frameid), backgroundid = VALUES(backgroundid), image = VALUES(image)";
         try {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
             preparedStatement.setString(1, userId);
             preparedStatement.setString(2, doll.getName());
-            Log.i("MysqlDatabase", "insertDoll", "ぬいぐるみデータを保存中");
             preparedStatement.setInt(3, doll.getExp());
             preparedStatement.setInt(4, doll.getLevel());
             preparedStatement.setInt(5, doll.getFrameId());
             preparedStatement.setInt(6, doll.getBackgroundId());
+            Log.i("MysqlDatabase", "insertDoll", "ぬいぐるみデータを保存中");
             preparedStatement.setString(7, doll.getImage());
+
 
             int i = preparedStatement.executeUpdate();
 
@@ -125,10 +129,54 @@ public class MysqlDatabase {
         } catch (SQLException e) {
 
             Log.i("MysqlDatabase", "insertDoll", "insert error");
+            e.printStackTrace();
 
         }
 
         return isInsertend;
+
+    }
+
+    public User selectUser(JSONObject jsonObject) {
+
+
+        User user = null;
+
+        try {
+
+            if(statement != null) {
+
+                String userId = jsonObject.getString("userid");
+                String password = jsonObject.getString("password");
+
+                String sqlCommand = "SELECT userid, iconid, name FROM user WHERE userid = ? AND password = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+                preparedStatement.setString(1, userId);
+                preparedStatement.setString(2, password);
+                ResultSet rs = preparedStatement.executeQuery();
+
+                if (rs.next()) {
+
+                    user = new User();
+                    user.setUserId(rs.getString("userid"));
+                    user.setIconId(rs.getInt("iconid"));
+                    user.setName(rs.getString("name"));
+
+                }else {
+
+
+                    Log.i("MysqlDatabase", "login", "user is not registered");
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return user;
 
     }
 
@@ -176,8 +224,6 @@ public class MysqlDatabase {
 
     public void close() {
 
-        Log.i("MysqlDatabase", "cloes", "データベースを閉じてる");
-
         try {
 
             if(rs != null) {
@@ -198,7 +244,6 @@ public class MysqlDatabase {
 
             }
 
-            Log.i("MysqlDatabase", "cloes", "データベースを閉じました");
 
         } catch (SQLException e) {
 
