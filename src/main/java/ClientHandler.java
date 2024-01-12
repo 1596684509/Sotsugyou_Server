@@ -39,10 +39,13 @@ public class ClientHandler implements Runnable{
                     if(datatype == ClientCode.DATATYPE_USERREGISTER_CODE) {
 
                         registerUser();
+                        closeDatabase();
 
                     }else if(datatype == ClientCode.DATATYPE_DOLLUP_CODE) {
 
+                        Log.i("ClientHandler", "run", "datatype: " + ClientCode.DATATYPE_DOLLUP_CODE);
                         updataDoll();
+                        closeDatabase();
 
                     }
 
@@ -63,6 +66,10 @@ public class ClientHandler implements Runnable{
             if(mysqlDatabase.insertDoll(JsonHandler.jsonToDoll(jsonObject), jsonObject.getString("userid"))) {
 
                 Log.i("ClientHandler", "registerUser", "doll updata end");
+
+            }else {
+
+                Log.i("ClientHandler", "registerUser", "doll updata error");
 
             }
 
@@ -136,17 +143,22 @@ public class ClientHandler implements Runnable{
 
     }
 
+    public void closeDatabase() {
 
+        if(mysqlDatabase != null) {
+
+            mysqlDatabase.close();
+            Log.i("ClientHandler", "close", "database を閉じてる");
+
+        }
+
+    }
 
     public void close() {
 
+        Log.i("ClientHandler", "close", "client を閉じてる");
+
         try {
-
-            if(mysqlDatabase != null) {
-
-                mysqlDatabase.close();
-
-            }
 
             if (in != null) {
                 in.close();
@@ -161,6 +173,8 @@ public class ClientHandler implements Runnable{
                 client.close();
 
             }
+
+            Log.i("ClientHandler", "close", "client を閉じました");
 
         } catch (IOException e) {
             e.printStackTrace();

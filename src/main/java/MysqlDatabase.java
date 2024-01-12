@@ -57,7 +57,7 @@ public class MysqlDatabase {
         boolean isInsertend = false;
 
         String sqlCommand = "INSERT INTO " + TABLE_NAME_USER + " (userid, password, iconid, name) VALUES(?, ?, ?, ?)" +
-                "ON DUPLICATE KEY UPDATA userid = userid, password = VALUES(password), iconid = VALUES(iconid), name = VALUES(name)";
+                "ON DUPLICATE KEY UPDATE userid = userid, password = VALUES(password), iconid = VALUES(iconid), name = VALUES(name)";
 
         try {
 
@@ -82,9 +82,9 @@ public class MysqlDatabase {
 
         }catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            return isInsertend;
         }
+
+            return isInsertend;
 
 
     }
@@ -94,12 +94,13 @@ public class MysqlDatabase {
         boolean isInsertend = false;
 
         String sqlCommand = "INSERT INTO " + TABLE_NAME_DOLL + " (userid, name, exp, level, frameid, backgroundid, image) VALUES (?, ?, ?, ?, ?, ?, ?)" +
-                "ON DUPLICATE KEY UPDATA userid = userid, name = VALUES(name), exp = VALUES(exp), level = VALUES(level), frameid = VALUES(frameid), backgroundid = VALUES(backgroundid), image + VALUES(image)";
+                "ON DUPLICATE KEY UPDATE userid = userid, name = VALUES(name), exp = VALUES(exp), level = VALUES(level), frameid = VALUES(frameid), backgroundid = VALUES(backgroundid), image + VALUES(image)";
         try {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
             preparedStatement.setString(1, userId);
             preparedStatement.setString(2, doll.getName());
+            Log.i("MysqlDatabase", "insertDoll", "ぬいぐるみデータを保存中");
             preparedStatement.setInt(3, doll.getExp());
             preparedStatement.setInt(4, doll.getLevel());
             preparedStatement.setInt(5, doll.getFrameId());
@@ -107,6 +108,8 @@ public class MysqlDatabase {
             preparedStatement.setString(7, doll.getImage());
 
             int i = preparedStatement.executeUpdate();
+
+
 
             if(i > 0) {
 
@@ -121,11 +124,11 @@ public class MysqlDatabase {
 
         } catch (SQLException e) {
 
-            e.printStackTrace();
+            Log.i("MysqlDatabase", "insertDoll", "insert error");
 
-        }finally {
-            return isInsertend;
         }
+
+        return isInsertend;
 
     }
 
@@ -142,8 +145,10 @@ public class MysqlDatabase {
 
             }else {
 
-                String sqlCommand = "SELECT name, exp, level, frameid, backgroundid, image FROM " + TABLE_NAME_DOLL + " WHERE user_id==" + userId;
-                rs = statement.executeQuery(sqlCommand);
+                String sqlCommand = "SELECT name, exp, level, frameid, backgroundid, image FROM " + TABLE_NAME_DOLL + " WHERE user_id=?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+                preparedStatement.setString(1, userId);
+                rs = preparedStatement.executeQuery();
 
                 while (rs.next()) {
 
