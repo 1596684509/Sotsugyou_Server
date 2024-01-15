@@ -6,5 +6,8 @@ public class ClientCode {
     public static final int DATATYPE_DOLLUP_CODE = 40041;
     public static final int DATATYPE_USERLOGIN_CODE = 40042;
     public static final int DATATYPE_USERREGISTER_CODE = 40043;
+    public static final int DATATYPE_USERUPDATAICON = 40044;
+    public static final int DATATYPE_USERUPDATANAME = 40045;
+    public static final int DATATYPE_USERPASSWORDUPDATA_CODE = 40046;
 
 }

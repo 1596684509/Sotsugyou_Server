@@ -92,6 +92,109 @@ public class MysqlDatabase {
 
     }
 
+
+    public boolean updataUserPassword(String oldps, String newps, String userId) {
+
+        boolean isUpdataed = false;
+
+        String sqlCommand = "UPDATE user SET password = ? WHERE userid = ? AND password = ?";
+
+        try {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+            preparedStatement.setString(1, newps);
+            preparedStatement.setString(2, userId);
+            preparedStatement.setString(3, oldps);
+            int i = preparedStatement.executeUpdate();
+
+            if(i > 0) {
+
+                isUpdataed = true;
+                Log.i("MysqlDatabase", "updataUserName", "データの更新は成功しました");
+
+            }else {
+
+                Log.i("MysqlDatabase", "updataUserName", "データの更新に失敗しました");
+
+            }
+
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return isUpdataed;
+
+    }
+
+    public boolean updataUserName(String name, String userId) {
+
+        boolean isUpdataed = false;
+
+        String sqlCommand = "UPDATE user SET name = ? WHERE userid = ?";
+
+        try {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, userId);
+            int i = preparedStatement.executeUpdate();
+
+            if(i > 0) {
+
+                isUpdataed = true;
+                Log.i("MysqlDatabase", "updataUserName", "データの更新は成功しました");
+
+            }else {
+
+                Log.i("MysqlDatabase", "updataUserName", "データの更新に失敗しました");
+
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return isUpdataed;
+
+    }
+
+    public boolean updataUserIcon(int iconid, String userId) {
+
+        boolean isUpdataed = false;
+
+        String sqlCommand = "UPDATE user SET iconid = ? WHERE userid = ?;";
+
+        try {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
+            preparedStatement.setInt(1, iconid);
+            preparedStatement.setString(2, userId);
+            int i = preparedStatement.executeUpdate();
+
+            if(i > 0) {
+
+                isUpdataed = true;
+                Log.i("MysqlDatabase", "updataUserIcon", "データの更新は成功しました");
+
+            }else {
+
+                Log.i("MysqlDatabase", "updataUserIcon", "データの更新に失敗しました");
+
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return isUpdataed;
+
+    }
+
     public boolean insertDoll (Doll doll, String userId) {
 
         boolean isInsertend = false;
@@ -107,7 +210,6 @@ public class MysqlDatabase {
             preparedStatement.setInt(4, doll.getLevel());
             preparedStatement.setInt(5, doll.getFrameId());
             preparedStatement.setInt(6, doll.getBackgroundId());
-            Log.i("MysqlDatabase", "insertDoll", "ぬいぐるみデータを保存中");
             preparedStatement.setString(7, doll.getImage());
 
 

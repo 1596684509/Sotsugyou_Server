@@ -31,6 +31,7 @@ public class ClientHandler implements Runnable{
 
             jsonObject = JsonHandler.jsonFromString(rcvMsg());
 
+            System.out.println(jsonObject);
             try {
 
                 if(jsonObject != null) {
@@ -49,6 +50,18 @@ public class ClientHandler implements Runnable{
 
                         login();
 
+                    }else if(datatype == ClientCode.DATATYPE_USERUPDATANAME) {
+
+                        updataUsername();
+
+                    }else if(datatype == ClientCode.DATATYPE_USERUPDATAICON) {
+
+                        updataUserIcon();
+
+                    }else if(datatype == ClientCode.DATATYPE_USERPASSWORDUPDATA_CODE) {
+
+                        updataPassword();
+
                     }
 
                 }
@@ -61,6 +74,36 @@ public class ClientHandler implements Runnable{
             close();
 
         }
+
+    }
+
+    private void updataUsername() {
+
+        try {
+
+            String name = jsonObject.getString("username");
+
+            mysqlDatabase.updataUserName(name, jsonObject.getString("userid"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void updataUserIcon() {
+
+        try {
+
+            int iconId = jsonObject.getInt("usericonid");
+            mysqlDatabase.updataUserIcon(iconId, jsonObject.getString("userid"));
+
+        } catch (JSONException e) {
+
+            e.printStackTrace();
+
+        }
+
 
     }
 
@@ -102,6 +145,26 @@ public class ClientHandler implements Runnable{
 
             Log.i("ClientHandler", "registerUser", "user register end");
 
+        }
+
+    }
+
+    private void updataPassword() {
+
+        try {
+
+            if(mysqlDatabase.updataUserPassword(jsonObject.getString("oldps"), jsonObject.getString("newps"), jsonObject.getString("userid"))) {
+
+                sendMessage("パスワード更新完了");
+
+            }else {
+
+                sendMessage("パスワード更新に失敗しました");
+
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
     }
