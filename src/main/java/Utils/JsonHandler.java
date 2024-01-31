@@ -91,4 +91,36 @@ public class JsonHandler {
 
     }
 
+    public static String dollToJson(Doll doll) {
+
+        String dollJson;
+
+        try {
+
+            if(doll != null) {
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("datatype", ClientCode.DATATYPE_DOLLDOWN_CODE);
+                jsonObject.put("dollname", doll.getName());
+                jsonObject.put("dollexp", doll.getExp());
+                jsonObject.put("dolllevel", doll.getLevel());
+                jsonObject.put("dollframeid", doll.getFrameId());
+                jsonObject.put("dollbackground", doll.getBackgroundId());
+                jsonObject.put("dollimage", doll.getImage());
+                dollJson = jsonObject.toString();
+
+            }else {
+
+                dollJson = "error";
+
+        }
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        return dollJson;
+
+    }
+
 }

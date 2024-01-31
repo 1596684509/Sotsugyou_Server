@@ -56,4 +56,5 @@ public class Doll {
     public void setBackgroundId(int backgroundId) {
         this.backgroundId = backgroundId;
     }
+
 }

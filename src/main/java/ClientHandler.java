@@ -1,6 +1,7 @@
 import Utils.ClientCode;
 import Utils.JsonHandler;
 import Utils.Log;
+import obj.Doll;
 import obj.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +62,10 @@ public class ClientHandler implements Runnable{
                     }else if(datatype == ClientCode.DATATYPE_USERPASSWORDUPDATA_CODE) {
 
                         updataPassword();
+
+                    }else if(datatype == ClientCode.DATATYPE_DOLLDOWN_CODE) {
+
+                        downUserDoll();
 
                     }
 
@@ -253,6 +258,21 @@ public class ClientHandler implements Runnable{
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private void downUserDoll() {
+
+        try {
+
+            Doll doll = mysqlDatabase.selectDoll(jsonObject.getString("userid"));
+
+            sendMessage(JsonHandler.dollToJson(doll));
+
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
     }
