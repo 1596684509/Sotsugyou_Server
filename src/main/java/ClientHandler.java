@@ -266,9 +266,18 @@ public class ClientHandler implements Runnable{
 
         try {
 
-            Doll doll = mysqlDatabase.selectDoll(jsonObject.getString("userid"));
+            Doll doll = mysqlDatabase.sqlselectDoll(jsonObject.getString("userid"));
 
-            sendMessage(JsonHandler.dollToJson(doll));
+            if(doll != null) {
+
+                sendMessage(JsonHandler.dollToJson(doll));
+
+            }else {
+
+                sendMessage("error");
+
+            }
+            Log.i("ClientHandler", "downUserDoll", JsonHandler.dollToJson(doll));
 
 
         } catch (JSONException e) {

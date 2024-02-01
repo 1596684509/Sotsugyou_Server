@@ -282,7 +282,7 @@ public class MysqlDatabase {
 
     }
 
-    public Doll selectDoll(String userId) {
+    public Doll sqlselectDoll(String userId) {
 
         Doll doll = null;
 
@@ -295,7 +295,7 @@ public class MysqlDatabase {
 
             }else {
 
-                String sqlCommand = "SELECT name, exp, level, frameid, backgroundid, image FROM " + TABLE_NAME_DOLL + " WHERE user_id=?";
+                String sqlCommand = "SELECT name, exp, level, frameid, backgroundid, image FROM " + TABLE_NAME_DOLL + " WHERE userid=?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand);
                 preparedStatement.setString(1, userId);
                 rs = preparedStatement.executeQuery();
